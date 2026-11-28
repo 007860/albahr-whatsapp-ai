@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Al-Bahr Horizon Travels — Live Voice Call with Ali Ahmad</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(160deg, #071925 0%, #0b293d 50%, #071b27 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 20px 36px;
+      text-align: center;
+    }
+    .top-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .encrypted {
+      font-size: 12px;
+      color: #94a3b8;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .company-badge {
+      background: rgba(224, 192, 128, 0.14);
+      border: 1px solid rgba(224, 192, 128, 0.4);
+      color: #e0c080;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.8px;
+      margin-top: 6px;
+    }
+    .agent-name {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 12px;
+    }
+    .agent-role {
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    .call-status {
+      font-size: 16px;
+      font-weight: 600;
+      color: #22c55e;
+      margin-top: 8px;
+      min-height: 24px;
+    }
+    .timer {
+      font-family: monospace;
+      font-size: 15px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .avatar-container {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .pulse-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px solid #22c55e;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    .speaking .pulse-ring {
+      animation: pulse 1.4s infinite ease-out;
+    }
+    .listening .pulse-ring {
+      border-color: #38bdf8;
+      animation: pulse 1.8s infinite ease-out;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.85; }
+      100% { transform: scale(1.45); opacity: 0; }
+    }
+    .avatar {
+      width: 146px;
+      height: 146px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f3854, #1e5276);
+      border: 3px solid #e0c080;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+      z-index: 2;
+    }
+    .avatar-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #e0c080;
+      letter-spacing: 1px;
+    }
+    .avatar-sub {
+      font-size: 10px;
+      color: #f8fafc;
+      margin-top: 3px;
+      letter-spacing: 0.6px;
+    }
+
+    .transcript-box {
+      max-width: 440px;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 95px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+    .client-said {
+      font-size: 13px;
+      color: #38bdf8;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 18px;
+    }
+    .btn-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s;
+    }
+    .btn-circle:active { transform: scale(0.92); }
+    .btn-start {
+      background: #22c55e;
+      color: #ffffff;
+      width: 82px;
+      height: 82px;
+      font-size: 32px;
+      animation: bounce 1.5s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .btn-mic {
+      background: #0284c7;
+      color: #fff;
+    }
+    .btn-end {
+      background: #ef4444;
+      color: #fff;
+    }
+    .lang-toggle {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .lang-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .lang-btn.active {
+      background: #22c55e;
+      color: #052e16;
+      font-weight: 700;
+      border-color: #22c55e;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="encrypted">🔒 Al-Bahr Live AI Voice Call Desk</div>
+    <div class="company-badge">AL-BAHR HORIZON TRAVELS & CONSULTANTS • LAHORE</div>
+    <div class="agent-name">Ali Ahmad</div>
+    <div class="agent-role">Senior Visa & Travel Consultant (0343-4762264)</div>
+    <div id="status" class="call-status">Tap Green Call Button to Answer & Talk Live</div>
+    <div id="timer" class="timer">00:00</div>
+    <div class="lang-toggle">
+      <button id="btn-ur" class="lang-btn active" onclick="setLang('ur-PK')">🇵🇰 اردو میں بات کریں</button>
+      <button id="btn-en" class="lang-btn" onclick="setLang('en-US')">🇬🇧 Speak in English</button>
+    </div>
+  </div>
+
+  <div id="avatar-box" class="avatar-container">
+    <div class="pulse-ring"></div>
+    <div class="avatar">
+      <div class="avatar-title">AL-BAHR</div>
+      <div class="avatar-sub">TRAVELS & CONSULTANTS</div>
+    </div>
+  </div>
+
+  <div class="transcript-box">
+    <div id="client-text" class="client-said"></div>
+    <div id="ali-text">سبز کال بٹن دبائیں اور سیدھا اپنی آواز میں علی احمد سے لائیو بات کریں!</div>
+  </div>
+
+  <div class="controls" id="start-controls">
+    <button class="btn-circle btn-start" onclick="startLiveCall()" title="Start Live Call">📞</button>
+  </div>
+
+  <div class="controls" id="active-controls" style="display:none;">
+    <button id="mic-btn" class="btn-circle btn-mic" onclick="triggerListen()" title="Tap to Speak">🎤</button>
+    <button class="btn-circle btn-end" onclick="endLiveCall()" title="End Call">📵</button>
+  </div>
+
+  <audio id="ali-audio" playsinline></audio>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const clientJid = params.get('jid') || 'live_caller_' + Date.now();
+    const clientName = params.get('name') || 'Valued Client';
+
+    let callActive = false;
+    let currentLang = 'ur-PK';
+    let recognition = null;
+    let isAliSpeaking = false;
+    let secondsElapsed = 0;
+    let timerInterval = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('btn-ur').className = 'lang-btn ' + (lang === 'ur-PK' ? 'active' : '');
+      document.getElementById('btn-en').className = 'lang-btn ' + (lang === 'en-US' ? 'active' : '');
+      if (recognition) {
+        recognition.lang = currentLang;
+      }
+    }
+
+    function updateStatus(text, mode) {
+      const st = document.getElementById('status');
+      st.textContent = text;
+      const av = document.getElementById('avatar-box');
+      av.className = 'avatar-container ' + (mode || '');
+    }
+
+    async function startLiveCall() {
+      callActive = true;
+      document.getElementById('start-controls').style.display = 'none';
+      document.getElementById('active-controls').style.display = 'flex';
+
+      secondsElapsed = 0;
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const m = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+        const s = String(secondsElapsed % 60).padStart(2, '0');
+        document.getElementById('timer').textContent = m + ':' + s;
+      }, 1000);
+
+      // Ali Ahmad answers the call immediately with his greeting!
+      await sendToAliAhmad('[CALL_CONNECTED_GREETING]', true);
+    }
+
+    function endLiveCall() {
+      callActive = false;
+      if (timerInterval) clearInterval(timerInterval);
+      if (recognition) { try { recognition.stop(); } catch (e) {} }
+      const audioEl = document.getElementById('ali-audio');
+      audioEl.pause();
+      updateStatus('Call Ended • Thank you for calling Al-Bahr Travels', '');
+      document.getElementById('active-controls').style.display = 'none';
+      document.getElementById('start-controls').style.display = 'flex';
+    }
+
+    async function sendToAliAhmad(spokenText, isInitialGreeting = false) {
+      if (!callActive) return;
+      isAliSpeaking = true;
+      if (!isInitialGreeting) {
+        document.getElementById('client-text').textContent = '🗣️ آپ نے کہا: "' + spokenText + '"';
+      }
+      updateStatus('Ali Ahmad سوچ رہے ہیں...', 'speaking');
+
+      try {
+        const res = await fetch('/live-call-turn', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jid: clientJid,
+            name: clientName,
+            text: spokenText,
+            lang: currentLang,
+            isGreeting: isInitialGreeting
+          })
+        });
+        const data = await res.json();
+        if (data.replyText) {
+          document.getElementById('ali-text').textContent = data.replyText;
+        }
+        if (data.audioBase64) {
+          updateStatus('🔊 Ali Ahmad بول رہے ہیں...', 'speaking');
+          const audioEl = document.getElementById('ali-audio');
+          audioEl.src = 'data:audio/ogg;base64,' + data.audioBase64;
+          audioEl.onended = () => {
+            isAliSpeaking = false;
+            if (callActive) startListeningToClient();
+          };
+          await audioEl.play();
+        } else {
+          isAliSpeaking = false;
+          if (callActive) startListeningToClient();
+        }
+      } catch (err) {
+        isAliSpeaking = false;
+        updateStatus('Tap Mic 🎤 to Talk', '');
+      }
+    }
+
+    function triggerListen() {
+      const audioEl = document.getElementById('ali-audio');
+      if (isAliSpeaking) {
+        audioEl.pause();
+        isAliSpeaking = false;
+      }
+      startListeningToClient();
+    }
+
+    function startListeningToClient() {
+      if (!callActive) return;
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRec) {
+        try {
+          if (recognition) { try { recognition.abort(); } catch (e) {} }
+          recognition = new SpeechRec();
+          recognition.lang = currentLang;
+          recognition.interimResults = false;
+          recognition.maxAlternatives = 1;
+
+          recognition.onstart = () => {
+            updateStatus('🎤 اب آپ بولیں، علی احمد سن رہے ہیں...', 'listening');
+          };
+
+          recognition.onresult = async (event) => {
+            const transcript = event.results[0][0].transcript;
+            if (transcript && transcript.trim()) {
+              await sendToAliAhmad(transcript.trim(), false);
+            }
+          };
+
+          recognition.onerror = () => {
+            if (callActive && !isAliSpeaking) {
+              updateStatus('بولنے کے لیے نیچے مائیک 🎤 بٹن دبائیں', '');
+            }
+          };
+
+          recognition.start();
+          return;
+        } catch (e) {}
+      }
+
+      // Fallback MediaRecorder if Web Speech API is unavailable
+      startFallbackAudioRecorder();
+    }
+
+    async function startFallbackAudioRecorder() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        updateStatus('🎤 اب آپ بولیں (5 سیکنڈ)...', 'listening');
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          const blob = new Blob(audioChunks, { type: 'audio/ogg' });
+          const reader = new FileReader();
+          reader.onloadend = async () => {
+            const base64Audio = reader.result.split(',')[1];
+            updateStatus('Ali Ahmad آپ کی بات سن رہے ہیں...', 'speaking');
+            const res = await fetch('/live-call-audio-turn', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ jid: clientJid, name: clientName, audioBase64: base64Audio, lang: currentLang })
+            });
+            const data = await res.json();
+            if (data.transcript) {
+              document.getElementById('client-text').textContent = '🗣️ آپ نے کہا: "' + data.transcript + '"';
+            }
+            if (data.replyText) {
+              document.getElementById('ali-text').textContent = data.replyText;
+            }
+            if (data.audioBase64) {
+              updateStatus('🔊 Ali Ahmad بول رہے ہیں...', 'speaking');
+              const audioEl = document.getElementById('ali-audio');
+              audioEl.src = 'data:audio/ogg;base64,' + data.audioBase64;
+              audioEl.onended = () => { isAliSpeaking = false; updateStatus('دوبارہ بولنے کے لیے مائیک 🎤 دبائیں', ''); };
+              await audioEl.play();
+            }
+          };
+          reader.readAsDataURL(blob);
+        };
+        mediaRecorder.start();
+        setTimeout(() => { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }, 6000);
+      } catch (e) {
+        updateStatus('براہ کرم مائیکروفون کی اجازت (Allow Mic) دیں', '');
+      }
+    }
+  </script>
+</body>
+</html>

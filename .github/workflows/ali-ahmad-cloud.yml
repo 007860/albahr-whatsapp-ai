@@ -1,0 +1,80 @@
+name: Ali Ahmad 24-7 Cloud WhatsApp Agent
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  schedule:
+    # Backup watchdog schedule every hour in case a run ever stops
+    - cron: '10 * * * *'
+
+concurrency:
+  group: ali-ahmad-whatsapp-bot
+  cancel-in-progress: false
+
+jobs:
+  run-ali-ahmad-24-7:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - name: Checkout Al-Bahr Travels AI Agent Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Audio, Fonts & Python Voice Engine
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg flac fonts-liberation fonts-dejavu fonts-dejavu-core openssl curl
+          pip3 install --break-system-packages --no-cache-dir edge-tts SpeechRecognition Pillow || pip3 install --no-cache-dir edge-tts SpeechRecognition Pillow
+
+      - name: Decrypt End-to-End Encrypted WhatsApp Sessions & Memory (AES-256)
+        env:
+          DATA_ENCRYPTION_KEY: ${{ secrets.DATA_ENCRYPTION_KEY }}
+        run: |
+          if [ -f cloud-data.enc ]; then
+            openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -in cloud-data.enc -out cloud-data.tar.gz -pass "pass:${DATA_ENCRYPTION_KEY}"
+            tar -xzf cloud-data.tar.gz
+            rm -f cloud-data.tar.gz
+          fi
+          npm install --no-audit --no-fund
+
+      - name: Run Ali Ahmad AI Agent in Cloud 24-7 (Zero-Gap Self-Chaining + Lifetime 16MB Storage Cleaner)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          DATA_ENCRYPTION_KEY: ${{ secrets.DATA_ENCRYPTION_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PORT: 3001
+        run: |
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+          chmod +x cloudflared
+          nohup ./cloudflared tunnel --url http://localhost:3001 > tunnel.log 2>&1 &
+          for i in {1..15}; do
+            URL=$(grep -oE "https://[a-zA-Z0-9-]+\.trycloudflare\.com" tunnel.log | grep -v "api.trycloudflare" | head -n 1 || true)
+            if [ -n "$URL" ]; then
+              echo "$URL" > current_tunnel_url.txt
+              echo "PUBLIC LIVE CALL ROOM URL: ${URL}/call"
+              break
+            fi
+            sleep 1
+          done
+          timeout 19800s node whatsapp-bridge.js || true
+          # 1. Clean temporary audio & stale tctokens older than 30 days so wa_auth_info stays compact forever
+          rm -f /tmp/*.ogg /tmp/*.mp3 /tmp/*.wav latest_voice_sample.ogg || true
+          find wa_auth_info wa_auth_info_2 -name "tctoken-*.json" -mtime +30 -delete 2>/dev/null || true
+          # 2. Re-pack & AES-256 Encrypt updated memory and sessions
+          tar -czf cloud-data.tar.gz posters wa_auth_info wa_auth_info_2 clients_memory.json personal_0325_contacts.json
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 -in cloud-data.tar.gz -out cloud-data.enc -pass "pass:${DATA_ENCRYPTION_KEY}"
+          rm -f cloud-data.tar.gz cloudflared tunnel.log current_tunnel_url.txt
+          rm -rf posters wa_auth_info wa_auth_info_2 node_modules
+          # 3. Lifetime 16MB Git History Pruner: create a clean single-commit orphan branch so old 16MB blobs never accumulate in git history!
+          git config user.name "Ali Ahmad Cloud Bot"
+          git config user.email "albahrtravelconsultants@gmail.com"
+          git checkout --orphan clean-main
+          git add -A
+          git commit -m "Auto-sync AES-256 encrypted memory & sessions (Clean 16MB Snapshot $(date -u +%Y-%m-%dT%H:%M:%SZ))"
+          git branch -M clean-main main
+          git push -f origin main
+          # 4. Trigger next workflow_dispatch run immediately for Zero-Gap 24/7 operation
+          curl -s -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/ali-ahmad-cloud.yml/dispatches" \
+            -d '{"ref":"main"}' || true
